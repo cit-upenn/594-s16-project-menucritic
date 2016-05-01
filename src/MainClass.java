@@ -1,7 +1,8 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainClass {
 	private MenuAnalyzer ma = new MenuAnalyzer();
@@ -16,6 +17,31 @@ public class MainClass {
 		mvp = new MenuVectorMap();
 		
 	}
+
+	private void startThreaded() {
+		/* create collection of threads to be executed */
+		Collection<Callable<MyTuple<Document,Document>>> tasks = new ArrayList<>();
+		for (MenuDataArgs item : allItems) { /* loop to parse data */
+			tasks.add(new MenuDataObject(id, rating, menuContents, chain, ma, mvp));
+		}
+
+        /* execute each item rating prediction thread and store in 'results' */
+		List<Future<MyTuple<Document, Document>>> results = null;
+		ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
+		try {
+			results = executor.invokeAll(tasks);
+		} catch (Exception ignore) {
+			throw new RuntimeException();
+		} finally {
+			executor.shutdown();
+		}
+
+		for (Future<MyTuple<Document, Document>> f : results) {
+
+		}
+
+	}
+
 	private void start() {
 		//for each menu
 			//new menuDataObject mdo(id, rating, chain)

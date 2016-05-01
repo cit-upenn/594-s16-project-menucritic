@@ -1,7 +1,6 @@
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class MenuVectorMap implements Serializable {
 	
@@ -12,18 +11,18 @@ public class MenuVectorMap implements Serializable {
 	/**
 	 * String is the restaurant ID, key is the MenuAttribute vector for the restaurant
 	 */
-	public Map<String, MenuAttributeVector> vectorMap;
-	private Map<String, MenuDataObject> dataMap;
+	public ConcurrentMap<String, MenuAttributeVector> vectorMap;
+	private ConcurrentMap<String, MenuDataObject> dataMap;
 	
 	public MenuVectorMap (){
-		vectorMap = new HashMap<>();
-		dataMap= new HashMap<>();
+		vectorMap = new ConcurrentHashMap<>();
+		dataMap= new ConcurrentHashMap<>();
 	}
 	
 	/**
 	 * Updates the restaurant in the map based on the MenuAnalyzer's data, 
 	 * store the ma for access
-	 * @param ma
+	 * @param mdo
 	 */
 	public void add(MenuDataObject mdo){
 		//WL_ITEM, ADJ_ITEM, ADV_ITEM, NW_ITEM, WL_DESC, ADJ_DESC, ADV_DESC, NW_DESC, CHAIN, RATING, TFIDF_WORD, TFIDF_BIGRAM
