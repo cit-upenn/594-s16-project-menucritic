@@ -21,7 +21,7 @@ public class VectorSpaceModel {
 	 * The hashmap maps a menu id to another hashmap.
 	 * The second hashmap maps a term to its tf-idf weight for this document.
 	 */
-	public TreeMap<String, TreeMap<String, Double>> tfIdfWeights;
+	public HashMap<String, TreeMap<String, Double>> tfIdfWeights;
 	
 	/**
 	 * The constructor.
@@ -31,7 +31,7 @@ public class VectorSpaceModel {
 	 */
 	public VectorSpaceModel(Corpus corpus) {
 		this.corpus = corpus;
-		tfIdfWeights = new TreeMap<String, TreeMap<String, Double>>();
+		tfIdfWeights = new HashMap<String, TreeMap<String, Double>>();
 		
 		createTfIdfWeights();
 	}
@@ -40,7 +40,7 @@ public class VectorSpaceModel {
 	 * This creates the tf-idf vectors.
 	 */
 	private void createTfIdfWeights() {
-		System.out.println("Creating the tf-idf weight vectors");
+//		System.out.println("Creating the tf-idf weight vectors");
 		Set<String> terms = corpus.getInvertedIndex().keySet();
 		
 		for (Document document : corpus.getDocuments()) {
@@ -58,7 +58,6 @@ public class VectorSpaceModel {
 				weights.put(term, weight);
 			}
 			tfIdfWeights.put(document.getMenuId(), weights);
-			System.out.println();
 		}
 	}
 	

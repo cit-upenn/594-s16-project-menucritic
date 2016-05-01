@@ -25,6 +25,7 @@ public class MenuVectorMap implements Serializable {
 	 */
 	public void add(MenuDataObject mdo){
 		//WL_ITEM, ADJ_ITEM, ADV_ITEM, NW_ITEM, WL_DESC, ADJ_DESC, ADV_DESC, NW_DESC, CHAIN, RATING, TFIDF_WORD, TFIDF_BIGRAM
+		mdo.calculateTotals();
 		Double [] attributes = {mdo.wl_item, mdo.adj_item, mdo.adv_item, mdo.nw_item,
 								mdo.wl_desc, mdo.adj_desc, mdo.adv_desc, mdo.nw_desc, 
 								mdo.chain, mdo.rating};
