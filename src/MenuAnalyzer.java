@@ -37,7 +37,7 @@ public class MenuAnalyzer extends Analyzer{
 		init();
 		tagger = new POSTaggerME(model);
 //		sb = new StringBuilder();
-		
+		//s
 	}
 	
 	private void init() {
