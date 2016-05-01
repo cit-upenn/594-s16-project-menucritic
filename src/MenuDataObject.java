@@ -63,8 +63,11 @@ public class MenuDataObject {
 			for(String word: map.keySet()){
 				descWordCount ++;
 				descWordLenTotal += word.length();
-				descAdjStat += map.get(word).substring(0,2).equals("JJ") ? 1 : 0; 
-				descAdvStat += map.get(word).substring(0,2).equals("RB") ? 1 : 0; 
+				if(map.containsKey(word) && map.get(word).length()>1){
+					descAdjStat += map.get(word).substring(0,2).equals("JJ") ? 1 : 0; 
+					descAdvStat += map.get(word).substring(0,2).equals("RB") ? 1 : 0; 
+				}
+				
 				
 			}
 			
