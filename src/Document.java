@@ -1,6 +1,4 @@
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -114,7 +112,7 @@ public class Document implements Comparable<Document> {
 	 * The overriden method from the Comparable interface.
 	 */
 	public int compareTo(Document other) {
-		return menuString.compareTo(other.getMenuString());
+		return menuId.compareTo(other.getMenuId());
 	}
 
 	/**

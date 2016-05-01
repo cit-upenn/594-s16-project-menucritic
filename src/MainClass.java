@@ -69,7 +69,7 @@ public class MainClass {
 			mdo.addDescriptionMap(tupDesc.second);
 			mdo.addDescription(tupDesc.first);
 		}
-		mdo.calculateTotals();
+//		mdo.calculateTotals();
 		
 		for(String s: testMenu2.keySet()){
 			MyTuple<String, HashMap<String,String>> tupItem = ma.generateTags(s);
@@ -78,7 +78,7 @@ public class MainClass {
 			mdo2.addDescriptionMap(tupDesc.second);
 			mdo2.addDescription(tupDesc.first);
 		}
-		mdo2.calculateTotals();
+//		mdo2.calculateTotals();
 		
 		for(String s: testMenu3.keySet()){
 			MyTuple<String, HashMap<String,String>> tupItem = ma.generateTags(s);
@@ -87,7 +87,7 @@ public class MainClass {
 			mdo3.addDescriptionMap(tupDesc.second);
 			mdo3.addDescription(tupDesc.first);
 		}
-		mdo3.calculateTotals();
+//		mdo3.calculateTotals();
 		long end1 = System.nanoTime();
 		System.out.println("Time taken to create all mdos: "+ (end1-start1)/Math.pow(10,9));
 		
@@ -117,6 +117,37 @@ public class MainClass {
 		long end4 = System.nanoTime();
 		System.out.println("Time taken to create corpus: "+ (end4-start4)/Math.pow(10,9));
 		
+		BigramGenerator bg = new BigramGenerator();
+		
+		Document doc11 = new Document(bg.generateBigrams(mdo.allDescString.toString()), id);
+		Document doc21 = new Document(bg.generateBigrams(mdo2.allDescString.toString()), id2);
+		Document doc31 = new Document(bg.generateBigrams(mdo3.allDescString.toString()), id3);
+		ArrayList<Document> docs2 = new ArrayList<>();
+		docs2.add(doc11);
+		docs2.add(doc21);
+		docs2.add(doc31);
+		
+		Corpus corp2 = new Corpus (docs2);
+		System.out.println("got here");
+		VectorSpaceModel vsm2 = new VectorSpaceModel(corp2);
+		HashMap<String, TreeMap<String, Double>> vsmMap2 = vsm2.tfIdfWeights;
+		for(String menuId: mvp.vectorMap.keySet()){
+			
+			//need to ensure iteration is the same each time. whereas .values() does not ensure
+			//any order - use tree map or linked hashmap - orders keys everytime, but not values, thats
+			//fine though i think
+//			System.out.println("Mav id: "+ mav.id);
+			Vector<Double> vec = new Vector<>();
+			vec.addAll(vsmMap2.get(menuId).values());
+			System.out.println(vec.size());
+//			System.out.println("28: "+ vec.get(29));
+			System.out.println(vec);
+			mvp.vectorMap.get(menuId).setTFIDFWordsVec(vec);
+			
+		}
+		
+		
+		
 		long start5 = System.nanoTime();
 		VectorSpaceModel vsm = new VectorSpaceModel(corp);
 		long end5 = System.nanoTime();
@@ -124,9 +155,9 @@ public class MainClass {
 		
 		System.out.println("total time including menuAnalyzer creation"+ (end5-start)/Math.pow(10,9));
 		
-		TreeMap<String, TreeMap<String, Double>> vsmMap = vsm.tfIdfWeights;
+		HashMap<String, TreeMap<String, Double>> vsmMap = vsm.tfIdfWeights;
 		//
-		System.out.println(mvp.vectorMap.values().size());
+//		System.out.println(mvp.vectorMap.values().size());
 		for(String menuId: mvp.vectorMap.keySet()){
 			
 			//need to ensure iteration is the same each time. whereas .values() does not ensure
@@ -135,9 +166,9 @@ public class MainClass {
 //			System.out.println("Mav id: "+ mav.id);
 			Vector<Double> vec = new Vector<>();
 			vec.addAll(vsmMap.get(menuId).values());
-//			System.out.println(vec.size());
+			System.out.println(vec.size());
 //			System.out.println("28: "+ vec.get(29));
-//			System.out.println(vec);
+			System.out.println(vec);
 			mvp.vectorMap.get(menuId).setTFIDFWordsVec(vec);
 			
 		}
