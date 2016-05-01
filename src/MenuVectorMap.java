@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 public class MenuVectorMap implements Serializable {
 	
 	/**
