@@ -7,7 +7,7 @@ import java.util.TreeSet;
 /**
  * This class represents a corpus of documents.
  * It will create an inverted index for these documents.
- * @author swapneel
+ * @author swapneel and gabecolton
  *
  */
 public class Corpus {
@@ -24,7 +24,7 @@ public class Corpus {
 	private HashMap<String, Set<Document>> invertedIndex;
 	
 	/**
-	 * The constructor - it takes in an arraylist of documents.
+	 * The constructor - it takes in an ArrayList of documents.
 	 * It will generate the inverted index based on the documents.
 	 * @param documents the list of documents
 	 */
@@ -39,7 +39,6 @@ public class Corpus {
 	 * This method will create an inverted index.
 	 */
 	private void createInvertedIndex() {
-		System.out.println("Creating the inverted index");
 		
 		for (Document document : documents) {
 			Set<String> terms = document.getTermList();
