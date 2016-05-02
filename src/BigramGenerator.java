@@ -4,17 +4,18 @@ import java.util.ArrayList;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.Analyzer.TokenStreamComponents;
-import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.shingle.ShingleFilter;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 public class BigramGenerator {
 	
 	Analyzer a; 
 	
+	/**
+	 * Constructor, initializes the anonymous analyzer to tokenize by white space and then
+	 * create Bigrams
+	 */
 	public BigramGenerator(){
 	
 		 a = new Analyzer() {
@@ -29,6 +30,11 @@ public class BigramGenerator {
 	}
 	
 	
+	/**
+	 * generates and returns Bigrams from the text
+	 * @param text the text from which to create bigrams
+	 * @return an ArrayList of all Bigrams found in the text
+	 */
 	public ArrayList<String> generateBigrams(String text){
 		StringReader sr = new StringReader(text);
 		TokenStream ts = a.tokenStream("", sr);
@@ -39,7 +45,6 @@ public class BigramGenerator {
 			 while (ts.incrementToken()) {
 				 String toAdd = term.toString();
 				 if(toAdd.contains(" ")){//is a bigram
-//					 System.out.println(toAdd);
 					 retVal.add(toAdd);
 				 }
 		       }

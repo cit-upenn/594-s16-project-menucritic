@@ -1,3 +1,6 @@
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -37,7 +40,7 @@ public class MainClass {
 		TreeMap<String, String> testMenu = new TreeMap<>();
 		testMenu.put("Shrimp Scampi", "This pesto pesto pesto pesto pesto pesto accidentally delicious lemon jumbo shrimp is carefully sauteed in a white wine butter sauce");
 		testMenu.put("Seared Scallops", "lemon pine nut juice reduction, micro greens, cooked tasty cream sauce");
-		testMenu.put("Filet Mignon", "Seared prime cut cooked nicely medium-rare");
+		testMenu.put("Filet Mignon", "Crème brûlée cut cooked nicely medium-rare");
 		testMenu.put("Duck ala King", "A scrupmtious pan-seared duck breast lathered in a Chambord balsamic reduction");
 		MenuDataObject mdo = new MenuDataObject(id, rating, chain);
 		String id2 = "12";
@@ -142,7 +145,7 @@ public class MainClass {
 			System.out.println(vec.size());
 //			System.out.println("28: "+ vec.get(29));
 			System.out.println(vec);
-			mvp.vectorMap.get(menuId).setTFIDFWordsVec(vec);
+			mvp.vectorMap.get(menuId).setTFIDFBigramsVec(vec);
 			
 		}
 		
@@ -172,6 +175,20 @@ public class MainClass {
 			mvp.vectorMap.get(menuId).setTFIDFWordsVec(vec);
 			
 		}
+		
+		try
+        {
+               FileOutputStream fos =
+                  new FileOutputStream("MenuVectorMap.ser");
+               ObjectOutputStream oos = new ObjectOutputStream(fos);
+               oos.writeObject(mvp);
+               oos.close();
+               fos.close();
+               System.out.printf("Serialized HashMap data is saved in MenuVectorMap.ser");
+        }catch(IOException ioe)
+         {
+               ioe.printStackTrace();
+         }
 	}
 	
 }
