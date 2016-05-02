@@ -8,13 +8,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class MainClass {
-	private final int NUM_THREADS = 5;
 	private MenuAnalyzer ma = new MenuAnalyzer();
 	private MenuVectorMap mvp;
+	final private int NUM_THREADS = 5;
 
 	public static void main(String[] args) {
 		MainClass mc = new MainClass();
-		mc.start();
+		mc.startThreaded();
 	}
 	public MainClass(){
 		ma = new MenuAnalyzer();
@@ -50,11 +50,11 @@ public class MainClass {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 		}
 
 		VectorSpaceModel monogramsVSM = new VectorSpaceModel(new Corpus(monograms));
 		VectorSpaceModel bigramsVSM = new VectorSpaceModel(new Corpus(bigrams));
-
 		HashMap<Integer, TreeMap<String, Double>> monoVSMMap = monogramsVSM.tfIdfWeights;
 		HashMap<Integer, TreeMap<String, Double>> biVSMMap = bigramsVSM.tfIdfWeights;
 		Map<Integer, MenuAttributeVector> menusAttributesMap = mvp.vectorMap;
@@ -67,7 +67,18 @@ public class MainClass {
 			menusAttributesMap.get(menuId).setTFIDFBigramsVec(vecBi);
 		}
 
-
+		try
+		{
+			FileOutputStream fos =
+					new FileOutputStream("MenuVectorMap.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(mvp);
+			oos.close();
+			fos.close();
+			System.out.printf("Serialized HashMap data is saved in MenuVectorMap.ser");
+		}catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
 
 	}
 
@@ -229,18 +240,6 @@ public class MainClass {
 //
 //		}
 //
-//		try
-//		{
-//			FileOutputStream fos =
-//					new FileOutputStream("MenuVectorMap.ser");
-//			ObjectOutputStream oos = new ObjectOutputStream(fos);
-//			oos.writeObject(mvp);
-//			oos.close();
-//			fos.close();
-//			System.out.printf("Serialized HashMap data is saved in MenuVectorMap.ser");
-//		}catch(IOException ioe) {
-//			ioe.printStackTrace();
-//		}
 //	}
 
 }
