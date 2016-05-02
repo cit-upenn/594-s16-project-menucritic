@@ -18,11 +18,27 @@ import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
 public class MenuAnalyzer extends Analyzer{
+	
+	/**
+	 * the part of speech model as a stream
+	 */
 	InputStream modelIn;
+	/**
+	 * the model to be created from the input stream
+	 */
 	POSModel model;
+	/**
+	 * a tagger object initialized with a model
+	 */
 	POSTaggerME tagger;
+	/**
+	 * stop words used for filtering
+	 */
 	CharArraySet stopWords; 
 	
+	/**
+	 * Constructor, will initialize the stopwords and the model
+	 */
 	public MenuAnalyzer(){
 		stopWords = StandardAnalyzer.STOP_WORDS_SET;
 		initModel();
@@ -38,7 +54,7 @@ public class MenuAnalyzer extends Analyzer{
 			  model = new POSModel(modelIn);
 			}
 			catch (IOException e) {
-			  // Model loading failed, handle the error
+			 System.out.println("Could not find appropriate binary file (en-pos-maxent.bin) ");
 			  e.printStackTrace();
 			}
 			finally {
@@ -70,8 +86,10 @@ public class MenuAnalyzer extends Analyzer{
 	 * 					 second: a HashMap of strings mapped to their POS tags
 	 */
 	public MyTuple<String, HashMap<String,String>> generateTags(String text){
+		
 		HashMap<String, String> wordsTags = new HashMap<String, String>();
 		ArrayList<String> filteredWords = new ArrayList<String>();
+		
 		StringReader sr = new StringReader(text);
 		TokenStream ts = this.tokenStream("", sr);
 		CharTermAttribute term = ts.addAttribute(CharTermAttribute.class);
@@ -81,7 +99,8 @@ public class MenuAnalyzer extends Analyzer{
 			ts.reset();
 			 while (ts.incrementToken()) {
 				 String toAdd = term.toString().replaceAll("[^A-za-z-']", "");
-				 if(toAdd != ""){
+				 if(toAdd != ""){//if the word to add is valid, add it to list of filtered words and append it to the string builder
+//					 System.out.println("***"+toAdd);
 					 filteredWords.add(toAdd);
 					 sb.append(toAdd + " ");
 				 }
@@ -100,7 +119,7 @@ public class MenuAnalyzer extends Analyzer{
 		
 		String [] words = filteredWords.toArray(new String [filteredWords.size()]);
 		String [] tags = tagger.tag(words);
-		
+		//populate the tagMap with the tags of the filtered words. 
 		for(int i = 0; i< tags.length; i++){
 			wordsTags.put(words[i], tags[i]);
 		}

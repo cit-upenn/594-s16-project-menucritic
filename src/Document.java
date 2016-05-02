@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * This class represents one document.
  * It will keep track of the term frequencies.
- * @author swapneel
+ * @author swapneel and gabe colton
  *
  */
 public class Document implements Comparable<Document> {
@@ -19,18 +19,22 @@ public class Document implements Comparable<Document> {
 	private HashMap<String, Integer> termFrequency;
 	
 	/**
-	 * The name of the file to read.
+	 * The full menu (all item descriptions, not items) in the form a string
 	 */
 	private String menuString;
-	private String menuId;
 	
 	/**
-	 * The constructor.
-	 * It takes in the name of a file to read.
-	 * It will read the file and pre-process it.
-	 * @param filename the name of the file
+	 * A unique id for this menu/restaurant
 	 */
-	public Document(String menuString, String menuId) {
+	private int menuId;
+	
+	
+	/**
+	 * A constructor for tf of single words
+	 * @param menuString the full menu as a string
+	 * @param menuId the id of this menu
+	 */
+	public Document(String menuString, int menuId) {
 		this.menuString = menuString;
 		termFrequency = new HashMap<String, Integer>();
 		this.menuId = menuId;
@@ -38,12 +42,22 @@ public class Document implements Comparable<Document> {
 		readFileAndPreProcess();
 	}
 	
-	public Document(ArrayList<String> bigramList, String menuId){
+	/**
+	 * A constructor for tf of bigrams
+	 * @param bigramList a list of all bigrams appearing in the document
+	 * @param menuId the id of the menu
+	 */
+	public Document(ArrayList<String> bigramList, int menuId){
 		termFrequency = new HashMap<String, Integer>();
-		readBigramListAndPreProcess(bigramList);
 		this.menuId = menuId;
+		readBigramListAndPreProcess(bigramList);
+		
 	}
 	
+	/**
+	 * populates the termFrequency instance variable with frequencies of the bigrams
+	 * @param bigramList all bigrams appearing in the document
+	 */
 	private void readBigramListAndPreProcess(ArrayList<String> bigramList) {
 		for(String bigram: bigramList){
 				if (termFrequency.containsKey(bigram)) {
@@ -52,26 +66,21 @@ public class Document implements Comparable<Document> {
 				} else {
 					termFrequency.put(bigram, 1);
 				}
-			
 		}
-		
 	}
 
 	/**
-	 * This method will read in the file and do some pre-processing.
-	 * The following things are done in pre-processing:
+	 * This method will read in the full menu string
+	 * At this point, all menus have been pre-processed to
+	 * remove stop words, get rid of all non alphabetic characters (except - and ')
 	 * Every word is converted to lower case.
-	 * Every character that is not a letter or a digit is removed.
-	 * We don't do any stemming.
-	 * Once the pre-processing is done, we create and update the 
+	 * We update the term frequency map
 	 */
 	private void readFileAndPreProcess() {
 			Scanner in = new Scanner(menuString);
-//			System.out.println("Reading file: " + filename + " and preprocessing");
 			
 			while (in.hasNext()) {
 				String nextWord = in.next();
-				
 				
 				if (!(nextWord.equalsIgnoreCase(""))) {
 					if (termFrequency.containsKey(nextWord)) {
@@ -112,25 +121,21 @@ public class Document implements Comparable<Document> {
 	 * The overriden method from the Comparable interface.
 	 */
 	public int compareTo(Document other) {
-		return menuId.compareTo(other.getMenuId());
-	}
-
-	/**
-	 * @return the filename
-	 */
-	private String getMenuString() {
-		return menuString;
+		return Integer.valueOf(menuId).compareTo(Integer.valueOf(other.menuId));
 	}
 	
 	/**
-	 * This method is used for pretty-printing a Document object.
+	 * This method is used for printing the entire menu string
 	 * @return the filename
 	 */
 	public String toString() {
 		return menuString;
 	}
 
-	public String getMenuId() {
+	/** getter for the menu id 
+	 * @return the menuId
+	 */
+	public int getMenuId() {
 		return menuId;
 	}
 

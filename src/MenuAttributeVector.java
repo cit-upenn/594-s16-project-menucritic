@@ -1,18 +1,79 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
+/**
+ * A class that represents a Vector of all possible attributes of a menu
+ * @author gabecolton
+ *
+ */
 public class MenuAttributeVector implements Serializable{
 	
 	/**
-	 * 
+	 * the serial ID for this object
 	 */
 	private static final long serialVersionUID = 8704267055052033776L;
 
-
+	/**
+	 * A 1d vector holding the value of the average word length for each item
+	 */
+	private Vector<Double> wl_item;
+	/**
+	 * A 1d vector holding the value of the average number of adjectives for each item
+	 */
+	private Vector<Double> adj_item;
+	/**
+	 * A 1d vector holding the value of the average number of adverbs for each item
+	 */
+	private Vector<Double> adv_item;
+	/**
+	 * A 1d vector holding the value of the average number of words in the item
+	 */
+	private Vector<Double> nw_item;
+	/**
+	 * A 1d vector holding the value of the average word length for each description
+	 */
+	private Vector<Double> wl_desc;
+	/**
+	 * A 1d vector holding the value of the average number of adjectives for each description
+	 */
+	private Vector<Double> adj_desc;
+	/**
+	 * A 1d vector holding the value of the average number of adverbs for each description
+	 */
+	private Vector<Double> adv_desc;
+	/**
+	 * A 1d vector holding the value of the average number of words in the description
+	 */
+	private Vector<Double> nw_desc;
+	
+	
+	/**
+	 * a 1d vector holding the value that is 1.0 if the menu is from a chain, 0.0 if not
+	 */
+	private Vector<Double> chain;
+	/**
+	 * The yelp rating of this restaurant
+	 */
+	private Vector<Double> rating;
+	
+	/**
+	 * The tfidf vector for the words in this menu
+	 */
+	private Vector<Double> tfidfWordVec;
+	/**
+	 * The tfidf vector for the bigrams in this menu
+	 */
+	private Vector<Double> tfidfBigramVec;
+	
+	/**
+	 * An ArrayList of all of the base attributes (not including tfidfword and tfidfbigram)
+	 */
+	private ArrayList<Vector<Double>> allAttrs;
+	
 	/**
 	 * Enum types allow user to request a Vector including any and all of the following attributes. 
-	 * Attributes not requested will be included in the vector as zeros. 
 	 * For Item and Descrition, respectively: 
 	 * WL: average word length
 	 * ADJ: adjectives per word
@@ -25,37 +86,74 @@ public class MenuAttributeVector implements Serializable{
 	 * @author gabecolton
 	 *
 	 */
-	public enum AttributesOptions{
+	public enum AttributeOptions{
 		WL_ITEM, ADJ_ITEM, ADV_ITEM, NW_ITEM, WL_DESC, ADJ_DESC, ADV_DESC, NW_DESC, CHAIN, RATING, TFIDF_WORD, TFIDF_BIGRAM
 	}
 	
-	public String id;
-	private Vector<Double> vec; 
-	private int tfidfWordsLen;
-	private int tfidfBigramsLen;
-	private int tfidfBigramsStartIndex;
+	/**
+	 * used when a user wants the whole vector
+	 */
+	private AttributeOptions [] allOptions = {
+			AttributeOptions.WL_ITEM,
+			 AttributeOptions.ADJ_ITEM,
+			 AttributeOptions.ADV_ITEM,
+			 AttributeOptions.NW_ITEM,
+			 AttributeOptions.WL_DESC,
+			 AttributeOptions.ADJ_DESC,
+			 AttributeOptions.ADV_DESC,
+			 AttributeOptions.NW_DESC,
+			 AttributeOptions.CHAIN,
+			 AttributeOptions.RATING,
+			 AttributeOptions.TFIDF_WORD,
+			 AttributeOptions.TFIDF_BIGRAM};
+	
+	/**
+	 * The id of this restaurant
+	 */
+	public int id;
+	
+	/**
+	 * The number of attributes this menu has
+	 */
 	private int attributeNum;
 	
 	
-	/**
-	 * default constructor, Initializes the vector with the first 7 indices initially set to -1
-	 */
-	public MenuAttributeVector(){
-		vec = new Vector<>();
-		attributeNum = AttributesOptions.values().length-2;
-		for(int i = 0; i < attributeNum; i++){
-			vec.add(-1.);
-		}
-	}
-	public MenuAttributeVector(Double [] atts, String id){
+	public MenuAttributeVector(Double [] atts, int id){
+		
+		  allAttrs = new ArrayList<>(); 
+		  attributeNum = AttributeOptions.values().length-2;
+		  wl_item = new Vector<>();
+		  adj_item = new Vector<>();
+		  adv_item = new Vector<>();
+		  nw_item = new Vector<>();
+		  wl_desc = new Vector<>();
+		  adj_desc = new Vector<>();
+		  adv_desc = new Vector<>();
+		  nw_desc = new Vector<>();
+		  chain = new Vector<>();
+		  rating = new Vector<>();
+		 
+		  allAttrs.add(wl_item);
+		  allAttrs.add(adj_item);
+		  allAttrs.add(adv_item);
+		  allAttrs.add(nw_item);
+		  allAttrs.add(wl_desc);
+		  allAttrs.add(adj_desc);
+		  allAttrs.add(adv_desc);
+		  allAttrs.add(nw_desc);
+		  allAttrs.add(chain);
+		  allAttrs.add(rating);
+		  
+		  tfidfWordVec = new Vector<>();
+		  tfidfBigramVec = new Vector<>();
+	  
 		this.id = id;
-		vec = new Vector<>();
-		attributeNum = AttributesOptions.values().length-2;
+		attributeNum = AttributeOptions.values().length-2;
 		if(attributeNum != atts.length){
 			throw new IllegalStateException("must add all attributes");
 		}
 		for(int i = 0; i < attributeNum; i++){
-			vec.add(atts[i]);
+			allAttrs.get(i).add(atts[i]);
 		}
 	}
 	
@@ -64,7 +162,14 @@ public class MenuAttributeVector implements Serializable{
 	 * @return
 	 */
 	public Vector<Double> getVector(){
-		return vec;
+		Vector<Double> retVal = new Vector<>();
+		for(Vector<Double> v: allAttrs){
+			retVal.addAll(v);
+		}
+		retVal.addAll(tfidfWordVec);
+		retVal.addAll(tfidfBigramVec);
+		
+		return retVal;
 	}
 	
 	/**
@@ -72,19 +177,17 @@ public class MenuAttributeVector implements Serializable{
 	 * @param options
 	 * @return
 	 */
-	public Vector<Double> getVector(AttributesOptions[] options){
-		Vector<Double> retVal = (Vector<Double>) vec.clone();
-		for(AttributesOptions ao : AttributesOptions.values()){
-			if(!Arrays.asList(options).contains(ao)){
-//				System.out.println("Not to be include: " + ao.toString() + " at index : "+ ao.ordinal());
-				if(ao.equals(AttributesOptions.TFIDF_WORD)){
-					zeroOutTFIDFWords(retVal);
-				} else if(ao.equals(AttributesOptions.TFIDF_BIGRAM)){
-					zeroOutTFIDFBigrams(retVal);
-				} else {
-					retVal.set(ao.ordinal(), 0.0);
+	public Vector<Double> getVector(AttributeOptions[] options){
+		Vector<Double> retVal = new Vector<>();
+		for(AttributeOptions ao : AttributeOptions.values()){
+			if(Arrays.asList(options).contains(ao)){
+				if(ao.equals(AttributeOptions.TFIDF_WORD)){
+					retVal.addAll(tfidfWordVec);
+				} else if(ao.equals(AttributeOptions.TFIDF_BIGRAM)){
+					retVal.addAll(tfidfBigramVec);
+				}else {
+					retVal.addAll(allAttrs.get(ao.ordinal()));
 				}
-				
 			}
 		}
 		return retVal;
@@ -95,7 +198,7 @@ public class MenuAttributeVector implements Serializable{
 	 * @param options
 	 * @return
 	 */
-	public String getVectorString(AttributesOptions[] options){
+	public String getVectorString(AttributeOptions[] options){
 		Vector<Double> tempVec = getVector(options);
 		StringBuilder sb = new StringBuilder();
 		for(Double d: tempVec){
@@ -106,50 +209,21 @@ public class MenuAttributeVector implements Serializable{
 	}
 	
 	/**
-	 * zeros out all tfidfWords for the vector
-	 * @param vector
-	 */
-	private void zeroOutTFIDFWords(Vector<Double> vector) {
-		for(int i = 0; i < tfidfWordsLen; i++){
-			vector.set(attributeNum+i, 0.0);
-		}
-		
-	}
-
-	/**
-	 * zeros out all tfidfBigrams for the vector
-	 * @param vector
-	 */
-	private void zeroOutTFIDFBigrams(Vector<Double> vector) {
-		for(int i = 0; i < tfidfBigramsLen; i++){
-			vector.set(tfidfBigramsStartIndex+i, 0.0);
-		}
-		
-	}
-	
-	
-	
-	/**
-	 * CALL BEFORE setTFIDFBigrams
-	 * Appends the tfidfWords Vector to this MenuAttributeVector
-	 * Also sets the tfidfWordsLen instance variable; 
+	 * 
+	 * Sets this MenuAttributeVector's tfidfWordVec to the parameter
 	 * @param tfidfWords
 	 */
 	public void setTFIDFWordsVec(Vector<Double> tfidfWords){
-		vec.addAll(tfidfWords);
-		tfidfWordsLen = tfidfWords.size();
+		tfidfWordVec = tfidfWords; 
+		  
 	}
 	
 	/**
-	 * CALL AFTER setTFIDFWordsVec
-	 * Appends the tfidfBigrams Vector to this MenuAttributeVector
-	 * Also sets the tfidfBigramsLen and tfidfBigramsStartIndex instance variables;
+	 * Sets this MenuAttributeVector's tfidfBigramVec to the parameter
 	 * @param tfidfBigrams
 	 */
 	public void setTFIDFBigramsVec(Vector<Double> tfidfBigrams){
-		vec.addAll(tfidfBigrams);
-		tfidfBigramsLen = tfidfBigrams.size();
-		tfidfBigramsStartIndex = attributeNum+tfidfWordsLen;
+		tfidfBigramVec = tfidfBigrams;
 	}
 
 	
@@ -160,12 +234,7 @@ public class MenuAttributeVector implements Serializable{
 	 */
 	@Override
 	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		for(Double d: vec){
-			sb.append(d+",");
-		}
-		sb.deleteCharAt(sb.length()-1);
-		return sb.toString();
+		return getVectorString(allOptions);
 	}
 	
 	

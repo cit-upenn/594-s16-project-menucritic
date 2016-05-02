@@ -1,10 +1,7 @@
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class MenuDataObject {
-		public String id; 
+		public int id; 
 		private Double itemAdjStat;
 		private Double itemAdvStat;
 		private Double itemWordLenTotal;
@@ -29,7 +26,13 @@ public class MenuDataObject {
 		public Double chain;
 		
 		
-		public MenuDataObject(String id, Double rating, Double chain){
+		/**
+		 * Constructor, initializes all stats to 0, sets the id, chain and rating
+		 * @param id the id of the associated menu
+		 * @param rating the yelp rating of the menu	
+		 * @param chain 1.0 for chain restaurant 0.0 for not chain
+		 */
+		public MenuDataObject(int id, Double rating, Double chain){
 			 this.id = id; 
 			 itemAdjStat = 0.;
 			 itemAdvStat = 0.;
@@ -45,37 +48,53 @@ public class MenuDataObject {
 			 allDescString = new StringBuilder();
 		}
 		
-		public void addItemMap(HashMap<String, String> map){
+		/**
+		 * Updates item stats based on the word, part of speech map
+		 * @param tagMap the map where key = word, value = POS
+		 */
+		public void addItemMap(HashMap<String, String> tagMap){
 			totalItemCount++;
-			for(String word: map.keySet()){
+			for(String word: tagMap.keySet()){
 				word = word.replaceAll("[^A-za-z]", "");
 				itemWordCount ++;
 				itemWordLenTotal += word.length();
-				if(map.containsKey(word) && map.get(word).length()>1){
-					itemAdjStat += map.get(word).substring(0,2).equals("JJ") ? 1 : 0; 
-					itemAdvStat += map.get(word).substring(0,2).equals("RB") ? 1 : 0; 
+				if(tagMap.containsKey(word) && tagMap.get(word).length()>1){
+					itemAdjStat += tagMap.get(word).substring(0,2).equals("JJ") ? 1 : 0; 
+					itemAdvStat += tagMap.get(word).substring(0,2).equals("RB") ? 1 : 0; 
 				}
 			}
 			
 		}
 		
-		public void addDescriptionMap(HashMap<String, String> map){
-			for(String word: map.keySet()){
+		/**
+		 * Updates description stats based on the word, part of speech map
+		 * @param tagMap the map where key = word, value = POS
+		 */
+		public void addDescriptionMap(HashMap<String, String> tagMap){
+			for(String word: tagMap.keySet()){
 				descWordCount ++;
 				descWordLenTotal += word.length();
-				if(map.containsKey(word) && map.get(word).length()>1){
-					descAdjStat += map.get(word).substring(0,2).equals("JJ") ? 1 : 0; 
-					descAdvStat += map.get(word).substring(0,2).equals("RB") ? 1 : 0; 
+				if(tagMap.containsKey(word) && tagMap.get(word).length()>1){
+					descAdjStat += tagMap.get(word).substring(0,2).equals("JJ") ? 1 : 0; 
+					descAdvStat += tagMap.get(word).substring(0,2).equals("RB") ? 1 : 0; 
 				}
 				
 				
 			}
 			
 		}
+		/**
+		 * Adds the description to the full menu string for this menu
+		 * @param desc
+		 */
 		public void addDescription(String desc){
 			allDescString.append(desc + "\n");
 		}
 		
+		/**
+		 * Done after all items and descriptions have been added. Calculates totals and updates
+		 * instance variables accordingly
+		 */
 		public void calculateTotals(){
 			wl_item = itemWordLenTotal/itemWordCount;
 //			System.out.println("wl_item: "+ wl_item);
