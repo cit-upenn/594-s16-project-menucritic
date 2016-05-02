@@ -1,6 +1,8 @@
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.pool2.impl.GenericObjectPool;
+
 public class MenuDataObject implements Callable<MyTuple<Document, Document>>{
     public Integer id;
     private Double itemAdjStat;
@@ -29,11 +31,14 @@ public class MenuDataObject implements Callable<MyTuple<Document, Document>>{
     public Double rating;
     public Double chain;
 
+    
     /**
-     * Initializes the data associated with a menu
-     * @param id identifier for menu
-     * @param rating yelp rating score
-     * @param chain boolean if it is a chain restaurant
+     * @param id the id of the associated menu
+     * @param rating the yelp rating of the menu
+     * @param menuContents a String, String HashMap of item, description
+     * @param chain 1.0 if yes, 0.0 if no
+     * @param objectPool the pool of MenuAnalyzerObjects
+     * @param mvp the ConcurrentHashMap to be updated by this Callable
      */
     public MenuDataObject(Integer id, Double rating, HashMap<String, String> menuContents, Double
             chain, GenericObjectPool<MenuAnalyzer> objectPool, MenuVectorMap mvp) {

@@ -40,7 +40,7 @@ public class DataInterface {
 				allMenus.add(new RestaurantMenu(ID, chain, rating, mapMenu, name));
 				
 			}
-		} catch (IOException | ParseException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

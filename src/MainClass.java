@@ -7,8 +7,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+
 public class MainClass {
-	private MenuAnalyzer ma = new MenuAnalyzer();
 	private MenuVectorMap mvp;
 	final private int NUM_THREADS = 5;
 
@@ -17,7 +19,6 @@ public class MainClass {
 		mc.startThreaded();
 	}
 	public MainClass(){
-		ma = new MenuAnalyzer();
 		mvp = new MenuVectorMap();
 
 	}
@@ -25,8 +26,23 @@ public class MainClass {
 	private void startThreaded() {
 		/* create collection of threads to be executed */
 		Collection<Callable<MyTuple<Document,Document>>> tasks = new ArrayList<>();
-		for (MenuDataArgs item : allItems) { /* loop to parse data */
-			tasks.add(new MenuDataObject(id, rating, menuContents, chain, ma, mvp));
+		DataInterface di = new DataInterface("cleanData.json");
+		ArrayList<RestaurantMenu> allMenus = di.getAllMenus();
+		
+		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+        config.setMaxTotal(NUM_THREADS);
+        config.setBlockWhenExhausted(true);
+        config.setMaxWaitMillis(30 * 1000);
+        
+        MenuAnalyzerFactory maf = new MenuAnalyzerFactory();
+        GenericObjectPool<MenuAnalyzer> maPool = new GenericObjectPool<MenuAnalyzer>(maf, config);
+		
+		for (RestaurantMenu menu : allMenus) { /* loop to parse data */
+			int id = menu.getID();
+			double rating = menu.getRating();
+			HashMap <String, String> menuContents = menu.getMenuAndDescriptions();
+			double chain = menu.isChain()? 1.0 : 0.0;
+			tasks.add(new MenuDataObject(id, rating, menuContents, chain, maPool , mvp));
 		}
 
         /* execute each item rating prediction thread and store in 'results' */
@@ -43,6 +59,7 @@ public class MainClass {
 		/* populate return values of thread pool into two ArrayList */
 		ArrayList<Document> monograms = new ArrayList<>();
 		ArrayList<Document> bigrams = new ArrayList<>();
+		//first Document in tuple is for monograms, second is for bigrams
 		for (Future<MyTuple<Document, Document>> f : results) {
 			try {
 				monograms.add(f.get().first);
@@ -50,7 +67,6 @@ public class MainClass {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
 
 		VectorSpaceModel monogramsVSM = new VectorSpaceModel(new Corpus(monograms));
@@ -58,25 +74,26 @@ public class MainClass {
 		HashMap<Integer, TreeMap<String, Double>> monoVSMMap = monogramsVSM.tfIdfWeights;
 		HashMap<Integer, TreeMap<String, Double>> biVSMMap = bigramsVSM.tfIdfWeights;
 		Map<Integer, MenuAttributeVector> menusAttributesMap = mvp.vectorMap;
-		for(Integer menuId: menusAttributesMap.keySet()){
+		for (Integer menuId: menusAttributesMap.keySet()){
 			Vector<Double> vecMono = new Vector<>();
 			Vector<Double> vecBi = new Vector<>();
+			if (!monoVSMMap.containsKey(menuId) || !biVSMMap.containsKey(menuId)) {
+				throw new IllegalStateException("Menu id did not exist");
+			}
 			vecMono.addAll(monoVSMMap.get(menuId).values());
 			vecBi.addAll(biVSMMap.get(menuId).values());
 			menusAttributesMap.get(menuId).setTFIDFWordsVec(vecMono);
 			menusAttributesMap.get(menuId).setTFIDFBigramsVec(vecBi);
 		}
 
-		try
-		{
-			FileOutputStream fos =
-					new FileOutputStream("MenuVectorMap.ser");
+		try	{
+			FileOutputStream fos = new FileOutputStream("MenuVectorMap.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(mvp);
 			oos.close();
 			fos.close();
 			System.out.printf("Serialized HashMap data is saved in MenuVectorMap.ser");
-		}catch(IOException ioe) {
+		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
 
