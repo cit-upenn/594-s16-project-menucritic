@@ -1,13 +1,12 @@
+import javax.print.Doc;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class MainClass {
 	private MenuAnalyzer ma = new MenuAnalyzer();
 	private MenuVectorMap mvp;
-	
+	final private int NUM_THREADS = 5;
+
 	public static void main(String[] args) {
 		MainClass mc = new MainClass();
 		mc.start();
@@ -36,9 +35,34 @@ public class MainClass {
 			executor.shutdown();
 		}
 
+		/* populate return values of thread pool into two ArrayList */
+		ArrayList<Document> monograms = new ArrayList<>();
+		ArrayList<Document> bigrams = new ArrayList<>();
 		for (Future<MyTuple<Document, Document>> f : results) {
-
+			try {
+				monograms.add(f.get().first);
+				bigrams.add(f.get().second);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+
+		VectorSpaceModel monogramsVSM = new VectorSpaceModel(new Corpus(monograms));
+		VectorSpaceModel bigramsVSM = new VectorSpaceModel(new Corpus(bigrams));
+
+		HashMap<String, TreeMap<String, Double>> monoVSMMap = monogramsVSM.tfIdfWeights;
+		HashMap<String, TreeMap<String, Double>> biVSMMap = bigramsVSM.tfIdfWeights;
+		Map<String, MenuAttributeVector> menusAttributesMap = mvp.vectorMap;
+		for(String menuId: menusAttributesMap.keySet()){
+			Vector<Double> vecMono = new Vector<>();
+			Vector<Double> vecBi = new Vector<>();
+			vecMono.addAll(monoVSMMap.get(menuId).values());
+			vecBi.addAll(biVSMMap.get(menuId).values());
+			menusAttributesMap.get(menuId).setTFIDFWordsVec(vecMono);
+			menusAttributesMap.get(menuId).setTFIDFBigramsVec(vecBi);
+		}
+
+
 
 	}
 
