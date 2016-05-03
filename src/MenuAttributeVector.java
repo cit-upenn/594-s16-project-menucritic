@@ -103,7 +103,7 @@ public class MenuAttributeVector implements Serializable{
 			 AttributeOptions.ADV_DESC,
 			 AttributeOptions.NW_DESC,
 			 AttributeOptions.CHAIN,
-			 AttributeOptions.RATING,
+//			 AttributeOptions.RATING,
 			 AttributeOptions.TFIDF_WORD,
 			 AttributeOptions.TFIDF_BIGRAM};
 	
@@ -195,16 +195,17 @@ public class MenuAttributeVector implements Serializable{
 	
 	/**
 	 * Returns a string representation of the Vector with the options not selected zeroed out
-	 * of format id, attr1 attr2 attr3...
+	 * of format rating, attr1 attr2 attr3...
 	 * @param options
 	 * @return
 	 */
 	public String getVectorString(AttributeOptions[] options){
 		Vector<Double> tempVec = getVector(options);
 		StringBuilder sb = new StringBuilder();
-		sb.append(Integer.toString(id)+",");
+//		sb.append(Integer.toString(id)+",");
+		sb.append(Double.toString(rating.get(0))).append(",");
 		for(Double d: tempVec){
-			sb.append(d+ " ");
+			sb.append(d).append(" ");
 		}
 		sb.deleteCharAt(sb.length()-1);
 		return sb.toString();

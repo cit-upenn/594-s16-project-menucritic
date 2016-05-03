@@ -124,6 +124,9 @@ public class MenuDataObject implements Callable<MyTuple<Document, Document>>{
     }
 
     public void calculateTotals(){
+    	if(totalItemCount <= 0){
+    		throw new IllegalStateException("Empty Menu!, ID: "+ id);
+    	}
         wl_item = itemWordLenTotal/itemWordCount;
 //			System.out.println("wl_item: "+ wl_item);
         adj_item = itemAdjStat/ itemWordCount;

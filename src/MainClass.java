@@ -31,7 +31,7 @@ public class MainClass {
 	private void startThreaded() {
 		/* create collection of threads to be executed */
 		Collection<Callable<MyTuple<Document,Document>>> tasks = new ArrayList<>();
-		DataInterface di = new DataInterface("smallTest.json");
+		DataInterface di = new DataInterface("cleanData.json");
 		ArrayList<RestaurantMenu> allMenus = di.getAllMenus();
 		
 		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
@@ -78,7 +78,7 @@ public class MainClass {
 		System.out.println("All Documents added");
 		VectorSpaceModel monogramsVSM = new VectorSpaceModel(new Corpus(monograms));
 		VectorSpaceModel bigramsVSM = new VectorSpaceModel(new Corpus(bigrams));
-		System.out.println("Vector Space Models created");
+		System.out.println("Corpi and Vector Space Models created");
 		HashMap<Integer, TreeMap<String, Double>> monoVSMMap = monogramsVSM.tfIdfWeights;
 		HashMap<Integer, TreeMap<String, Double>> biVSMMap = bigramsVSM.tfIdfWeights;
 		Map<Integer, MenuAttributeVector> menusAttributesMap = mvp.vectorMap;
@@ -95,11 +95,15 @@ public class MainClass {
 			menusAttributesMap.get(menuId).setTFIDFBigramsVec(vecBi);
 			System.out.println("Finished iteration "+ j++);
 		}
-		
+//		 for(MenuAttributeVector mav : mvp.vectorMap.values()){
+//			 System.out.println(mav);
+//			}
 		PrintWriter writer = null;
 		try {
+			
 			//change the output name/file extenstion as needed
 			 writer = new PrintWriter("vec_output.txt");
+			 System.out.println("PrintWriter created");
 			 //change or comment ou
 			 MenuAttributeVector.AttributeOptions [] options = {
 					 //couldn't find out how to import enums...
@@ -111,15 +115,18 @@ public class MainClass {
 					 MenuAttributeVector.AttributeOptions.ADJ_DESC,
 					 MenuAttributeVector.AttributeOptions.ADV_DESC,
 					 MenuAttributeVector.AttributeOptions.NW_DESC,
-					 MenuAttributeVector.AttributeOptions.CHAIN,
-					 MenuAttributeVector.AttributeOptions.RATING,
+//					 MenuAttributeVector.AttributeOptions.CHAIN,
+//					 MenuAttributeVector.AttributeOptions.RATING,
 					 MenuAttributeVector.AttributeOptions.TFIDF_WORD,
 					 MenuAttributeVector.AttributeOptions.TFIDF_BIGRAM
 					 
 			 };
+			 System.out.println("Options Set");
 			 for(MenuAttributeVector mav : mvp.vectorMap.values()){
+				 System.out.println("writing vector "+ mav.id);
 					writer.println(mav.getVectorString(options));
 				}
+			 System.out.println("All Vectors written");
 			 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
