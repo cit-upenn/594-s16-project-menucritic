@@ -13,11 +13,13 @@ public class MenuAnalyzerFactory extends BasePooledObjectFactory<MenuAnalyzer>{
 
 	@Override
 	public MenuAnalyzer create() throws Exception {
+		System.out.println("creating a new Menu Analyzer");
 		return new MenuAnalyzer();
 	}
 
 	@Override
 	public PooledObject<MenuAnalyzer> wrap(MenuAnalyzer ma) {
+		System.out.println("returned a pooled object");
 		return new DefaultPooledObject<MenuAnalyzer>(ma);
 	}
 

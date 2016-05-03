@@ -1,7 +1,12 @@
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,7 +31,7 @@ public class MainClass {
 	private void startThreaded() {
 		/* create collection of threads to be executed */
 		Collection<Callable<MyTuple<Document,Document>>> tasks = new ArrayList<>();
-		DataInterface di = new DataInterface("cleanData.json");
+		DataInterface di = new DataInterface("smallTest.json");
 		ArrayList<RestaurantMenu> allMenus = di.getAllMenus();
 		
 		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
@@ -55,25 +60,29 @@ public class MainClass {
 		} finally {
 			executor.shutdown();
 		}
-
+		System.out.println("Handed out all tasks");
 		/* populate return values of thread pool into two ArrayList */
 		ArrayList<Document> monograms = new ArrayList<>();
 		ArrayList<Document> bigrams = new ArrayList<>();
 		//first Document in tuple is for monograms, second is for bigrams
+		int i = 0; 
 		for (Future<MyTuple<Document, Document>> f : results) {
 			try {
+				System.out.println("adding mongrams and bigrams: " + i++);
 				monograms.add(f.get().first);
 				bigrams.add(f.get().second);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
+		System.out.println("All Documents added");
 		VectorSpaceModel monogramsVSM = new VectorSpaceModel(new Corpus(monograms));
 		VectorSpaceModel bigramsVSM = new VectorSpaceModel(new Corpus(bigrams));
+		System.out.println("Vector Space Models created");
 		HashMap<Integer, TreeMap<String, Double>> monoVSMMap = monogramsVSM.tfIdfWeights;
 		HashMap<Integer, TreeMap<String, Double>> biVSMMap = bigramsVSM.tfIdfWeights;
 		Map<Integer, MenuAttributeVector> menusAttributesMap = mvp.vectorMap;
+		int j = 0; 
 		for (Integer menuId: menusAttributesMap.keySet()){
 			Vector<Double> vecMono = new Vector<>();
 			Vector<Double> vecBi = new Vector<>();
@@ -84,18 +93,54 @@ public class MainClass {
 			vecBi.addAll(biVSMMap.get(menuId).values());
 			menusAttributesMap.get(menuId).setTFIDFWordsVec(vecMono);
 			menusAttributesMap.get(menuId).setTFIDFBigramsVec(vecBi);
+			System.out.println("Finished iteration "+ j++);
 		}
-
-		try	{
-			FileOutputStream fos = new FileOutputStream("MenuVectorMap.ser");
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(mvp);
-			oos.close();
-			fos.close();
-			System.out.printf("Serialized HashMap data is saved in MenuVectorMap.ser");
-		} catch(IOException ioe) {
-			ioe.printStackTrace();
+		
+		PrintWriter writer = null;
+		try {
+			//change the output name/file extenstion as needed
+			 writer = new PrintWriter("vec_output.txt");
+			 //change or comment ou
+			 MenuAttributeVector.AttributeOptions [] options = {
+					 //couldn't find out how to import enums...
+					 MenuAttributeVector.AttributeOptions.WL_ITEM,
+					 MenuAttributeVector.AttributeOptions.ADJ_ITEM,
+					 MenuAttributeVector.AttributeOptions.ADV_ITEM,
+					 MenuAttributeVector.AttributeOptions.NW_ITEM,
+					 MenuAttributeVector.AttributeOptions.WL_DESC,
+					 MenuAttributeVector.AttributeOptions.ADJ_DESC,
+					 MenuAttributeVector.AttributeOptions.ADV_DESC,
+					 MenuAttributeVector.AttributeOptions.NW_DESC,
+					 MenuAttributeVector.AttributeOptions.CHAIN,
+					 MenuAttributeVector.AttributeOptions.RATING,
+					 MenuAttributeVector.AttributeOptions.TFIDF_WORD,
+					 MenuAttributeVector.AttributeOptions.TFIDF_BIGRAM
+					 
+			 };
+			 for(MenuAttributeVector mav : mvp.vectorMap.values()){
+					writer.println(mav.getVectorString(options));
+				}
+			 
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			if (writer != null){
+				writer.close();
+			}
 		}
+		
+		
+//		try	{
+//			FileOutputStream fos = new FileOutputStream("smallTest.ser");
+//			ObjectOutputStream oos = new ObjectOutputStream(fos);
+//			oos.writeObject(mvp);
+//			oos.close();
+//			fos.close();
+//			System.out.printf("Serialized HashMap data is saved in MenuVectorMap2.ser");
+//		} catch(IOException ioe) {
+//			ioe.printStackTrace();
+//		}
 
 	}
 

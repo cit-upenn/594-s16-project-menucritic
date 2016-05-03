@@ -87,6 +87,8 @@ public class MenuDataObject implements Callable<MyTuple<Document, Document>>{
         }
         mvp.add(this);
         BigramGenerator bg = new BigramGenerator();
+        objectPool.returnObject(ma);
+        System.out.println("MA returned, Finished with restaurant" + id);
         return new MyTuple<>(new Document(this.allDescString.toString(), id), new Document(bg.generateBigrams(this.allDescString.toString()), id));
     }
 

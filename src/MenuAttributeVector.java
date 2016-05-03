@@ -93,7 +93,7 @@ public class MenuAttributeVector implements Serializable{
 	/**
 	 * used when a user wants the whole vector
 	 */
-	private AttributeOptions [] allOptions = {
+	public static AttributeOptions [] allOptions = {
 			AttributeOptions.WL_ITEM,
 			 AttributeOptions.ADJ_ITEM,
 			 AttributeOptions.ADV_ITEM,
@@ -195,14 +195,16 @@ public class MenuAttributeVector implements Serializable{
 	
 	/**
 	 * Returns a string representation of the Vector with the options not selected zeroed out
+	 * of format id, attr1 attr2 attr3...
 	 * @param options
 	 * @return
 	 */
 	public String getVectorString(AttributeOptions[] options){
 		Vector<Double> tempVec = getVector(options);
 		StringBuilder sb = new StringBuilder();
+		sb.append(Integer.toString(id)+",");
 		for(Double d: tempVec){
-			sb.append(d+ ",");
+			sb.append(d+ " ");
 		}
 		sb.deleteCharAt(sb.length()-1);
 		return sb.toString();

@@ -24,9 +24,22 @@ public class DataInterface {
 			JSONArray a = (JSONArray) parser.parse(new FileReader(fileName));
 			for(Object o : a) {
 				JSONObject restaurant = (JSONObject) o;
-				int ID = (int) restaurant.get("ID");
+				int ID;
+				if(restaurant.get("ID").getClass() == Long.class) {
+					Long lon = (Long) restaurant.get("ID");
+					ID = lon.intValue();
+				} else {
+					ID = (int) restaurant.get("ID");
+				}
+				System.out.println("Restaurant id: "+ID);
 				boolean chain = (boolean) restaurant.get("Chain");
-				double rating = (double) restaurant.get("Rating");
+				double rating;
+				if(restaurant.get("Rating").getClass() == Long.class) {
+					Long lon = (Long) restaurant.get("Rating");
+					rating = lon.doubleValue();
+				} else {
+					rating = (double) restaurant.get("Rating");
+				}
 				JSONArray Menu = (JSONArray) restaurant.get("Menu");
 				HashMap<String, String> mapMenu = new HashMap<String,String>();
 				for(Object i : Menu) {
