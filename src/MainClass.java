@@ -1,19 +1,13 @@
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 public class MainClass {
 	private MenuVectorMap mvp;
@@ -33,15 +27,15 @@ public class MainClass {
 		Collection<Callable<MyTuple<Document,Document>>> tasks = new ArrayList<>();
 		DataInterface di = new DataInterface("cleanData.json");
 		ArrayList<RestaurantMenu> allMenus = di.getAllMenus();
-		
+
 		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
-        config.setMaxTotal(NUM_THREADS);
-        config.setBlockWhenExhausted(true);
-        config.setMaxWaitMillis(30 * 1000);
-        
-        MenuAnalyzerFactory maf = new MenuAnalyzerFactory();
-        GenericObjectPool<MenuAnalyzer> maPool = new GenericObjectPool<MenuAnalyzer>(maf, config);
-		
+		config.setMaxTotal(NUM_THREADS);
+		config.setBlockWhenExhausted(true);
+		config.setMaxWaitMillis(30 * 1000);
+
+		MenuAnalyzerFactory maf = new MenuAnalyzerFactory();
+		GenericObjectPool<MenuAnalyzer> maPool = new GenericObjectPool<MenuAnalyzer>(maf, config);
+
 		for (RestaurantMenu menu : allMenus) { /* loop to parse data */
 			int id = menu.getID();
 			double rating = menu.getRating();
@@ -65,7 +59,7 @@ public class MainClass {
 		ArrayList<Document> monograms = new ArrayList<>();
 		ArrayList<Document> bigrams = new ArrayList<>();
 		//first Document in tuple is for monograms, second is for bigrams
-		int i = 0; 
+		int i = 0;
 		for (Future<MyTuple<Document, Document>> f : results) {
 			try {
 				System.out.println("adding mongrams and bigrams: " + i++);
@@ -82,7 +76,7 @@ public class MainClass {
 		HashMap<Integer, TreeMap<String, Double>> monoVSMMap = monogramsVSM.tfIdfWeights;
 		HashMap<Integer, TreeMap<String, Double>> biVSMMap = bigramsVSM.tfIdfWeights;
 		Map<Integer, MenuAttributeVector> menusAttributesMap = mvp.vectorMap;
-		int j = 0; 
+		int j = 0;
 		for (Integer menuId: menusAttributesMap.keySet()){
 			Vector<Double> vecMono = new Vector<>();
 			Vector<Double> vecBi = new Vector<>();
@@ -95,9 +89,11 @@ public class MainClass {
 			menusAttributesMap.get(menuId).setTFIDFBigramsVec(vecBi);
 			System.out.println("Finished iteration "+ j++);
 		}
+
 //		 for(MenuAttributeVector mav : mvp.vectorMap.values()){
 //			 System.out.println(mav);
 //			}
+
 		PrintWriter writer = null;
 		try {
 			
@@ -122,22 +118,20 @@ public class MainClass {
 					 
 			 };
 			 System.out.println("Options Set");
-			 for(MenuAttributeVector mav : mvp.vectorMap.values()){
-				 System.out.println("writing vector "+ mav.id);
-					writer.println(mav.getVectorString(options));
-				}
-			 System.out.println("All Vectors written");
-			 
+			for(MenuAttributeVector mav : mvp.vectorMap.values()){
+				writer.println(mav.getVectorString(options));
+			}
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
+		} finally{
 			if (writer != null){
 				writer.close();
 			}
 		}
-		
-		
+
+
 //		try	{
 //			FileOutputStream fos = new FileOutputStream("smallTest.ser");
 //			ObjectOutputStream oos = new ObjectOutputStream(fos);
