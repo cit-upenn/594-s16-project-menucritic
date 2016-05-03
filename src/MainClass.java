@@ -25,7 +25,7 @@ public class MainClass {
 	private void startThreaded() {
 		/* create collection of threads to be executed */
 		Collection<Callable<MyTuple<Document,Document>>> tasks = new ArrayList<>();
-		DataInterface di = new DataInterface("cleanData.json");
+		DataInterface di = new DataInterface("FinalData.json");
 		ArrayList<RestaurantMenu> allMenus = di.getAllMenus();
 
 		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
@@ -100,7 +100,7 @@ public class MainClass {
 			//change the output name/file extenstion as needed
 			 writer = new PrintWriter("vec_output.txt");
 			 System.out.println("PrintWriter created");
-			 //change or comment ou
+			 //change or comment out undesired attributes
 			 MenuAttributeVector.AttributeOptions [] options = {
 					 //couldn't find out how to import enums...
 					 MenuAttributeVector.AttributeOptions.WL_ITEM,

@@ -202,12 +202,10 @@ public class MenuAttributeVector implements Serializable{
 	public String getVectorString(AttributeOptions[] options){
 		Vector<Double> tempVec = getVector(options);
 		StringBuilder sb = new StringBuilder();
-<<<<<<< HEAD
+
 //		sb.append(Integer.toString(id)+",");
 		sb.append(Double.toString(rating.get(0))).append(",");
-=======
-		sb.append(Integer.toString(id)).append(",");
->>>>>>> 7a1973e77e6b41c44fa7de13494c488353b652fa
+
 		for(Double d: tempVec){
 			sb.append(d).append(" ");
 		}
