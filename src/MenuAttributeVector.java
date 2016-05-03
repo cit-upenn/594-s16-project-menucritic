@@ -86,7 +86,7 @@ public class MenuAttributeVector implements Serializable{
 	 * @author gabecolton
 	 *
 	 */
-	public enum AttributeOptions{
+	public enum AttributeOptions {
 		WL_ITEM, ADJ_ITEM, ADV_ITEM, NW_ITEM, WL_DESC, ADJ_DESC, ADV_DESC, NW_DESC, CHAIN, RATING, TFIDF_WORD, TFIDF_BIGRAM
 	}
 	
@@ -202,9 +202,9 @@ public class MenuAttributeVector implements Serializable{
 	public String getVectorString(AttributeOptions[] options){
 		Vector<Double> tempVec = getVector(options);
 		StringBuilder sb = new StringBuilder();
-		sb.append(Integer.toString(id)+",");
+		sb.append(Integer.toString(id)).append(",");
 		for(Double d: tempVec){
-			sb.append(d+ " ");
+			sb.append(d).append(" ");
 		}
 		sb.deleteCharAt(sb.length()-1);
 		return sb.toString();
