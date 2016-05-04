@@ -1,9 +1,10 @@
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The class DataInterface is used to act as an interface between the data and vector generation
@@ -62,7 +63,6 @@ public class DataInterface {
 				
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return allMenus;

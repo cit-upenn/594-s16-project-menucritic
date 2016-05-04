@@ -78,7 +78,7 @@ public class RestaurantData {
 
 	/**
 	 * a setter for the longitude
-	 * @param the longitude of the restaurant
+	 * @param longitude of the restaurant
 	 */
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;

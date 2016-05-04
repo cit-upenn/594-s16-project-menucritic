@@ -12,19 +12,24 @@ import java.util.concurrent.Future;
 public class MainClass {
 	private MenuVectorMap mvp;
 	final private int NUM_THREADS = 5;
-	
+
 	private final String outputFileName = "excel_output.txt";
-	
+
 	public MainClass(){
 		mvp = new MenuVectorMap();
 	}
-	
+
 	public static void main(String[] args) {
 		MainClass mc = new MainClass();
 		mc.startThreaded();
 	}
-	
-	 public void startThreaded() {
+
+	/**
+	 * Start multi-threaded computation of word metrics
+	 * (bigram analysis is commented out because we found that it was not helpful in analyzing the
+	 * data)
+	 */
+	public void startThreaded() {
 		/* create collection of threads to be executed */
 		Collection<Callable<MyTuple<Document,Document>>> tasks = new ArrayList<>();
 		DataInterface di = new DataInterface("FinalData.json");
@@ -96,7 +101,7 @@ public class MainClass {
 		}
 		outputFile(outputFileName);
 	}
-	
+
 	/**
 	 * Write all of the MenuAttributeVectors out to a file to be used in analysis
 	 * @param outputFile
@@ -105,21 +110,21 @@ public class MainClass {
 		PrintWriter writer = null;
 		try {
 			//change the output name/file extenstion as needed
-			 writer = new PrintWriter(outputFile);
-			 System.out.println("PrintWriter created");
-			 //change or comment out undesired attributes
-			 MenuAttributeVector.AttributeOptions [] options = {
-					 //couldn't find out how to import enums more elegantly...
-					 MenuAttributeVector.AttributeOptions.WL_ITEM,
-					 MenuAttributeVector.AttributeOptions.ADJ_ITEM,
-					 MenuAttributeVector.AttributeOptions.ADV_ITEM,
-					 MenuAttributeVector.AttributeOptions.NW_ITEM,
-					 MenuAttributeVector.AttributeOptions.WL_DESC,
-					 MenuAttributeVector.AttributeOptions.ADJ_DESC,
-					 MenuAttributeVector.AttributeOptions.ADV_DESC,
-					 MenuAttributeVector.AttributeOptions.NW_DESC,
-			 };
-			 System.out.println("Options Set");
+			writer = new PrintWriter(outputFile);
+			System.out.println("PrintWriter created");
+			//change or comment out undesired attributes
+			MenuAttributeVector.AttributeOptions [] options = {
+					//couldn't find out how to import enums more elegantly...
+					MenuAttributeVector.AttributeOptions.WL_ITEM,
+					MenuAttributeVector.AttributeOptions.ADJ_ITEM,
+					MenuAttributeVector.AttributeOptions.ADV_ITEM,
+					MenuAttributeVector.AttributeOptions.NW_ITEM,
+					MenuAttributeVector.AttributeOptions.WL_DESC,
+					MenuAttributeVector.AttributeOptions.ADJ_DESC,
+					MenuAttributeVector.AttributeOptions.ADV_DESC,
+					MenuAttributeVector.AttributeOptions.NW_DESC,
+			};
+			System.out.println("Options Set");
 			for(MenuAttributeVector mav : mvp.vectorMap.values()){
 				writer.println(mav.getVectorString(options));
 			}
@@ -132,9 +137,6 @@ public class MainClass {
 				writer.close();
 			}
 		}
-		
+
 	}
-
-
-
 }

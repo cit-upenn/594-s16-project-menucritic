@@ -1,10 +1,5 @@
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import opennlp.tools.postag.POSModel;
+import opennlp.tools.postag.POSTaggerME;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
@@ -14,8 +9,12 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.CharArraySet;
 
-import opennlp.tools.postag.POSModel;
-import opennlp.tools.postag.POSTaggerME;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MenuAnalyzer extends Analyzer{
 	
@@ -58,15 +57,13 @@ public class MenuAnalyzer extends Analyzer{
 			  e.printStackTrace();
 			}
 			finally {
-			  if (modelIn != null) {
-			    try {
-			      modelIn.close();
-			    }
-			    catch (IOException e) {
-			    }
-			  }
+			if (modelIn != null) {
+				try {
+					modelIn.close();
+				} catch (IOException e) {
+				}
 			}
-		
+		}
 	}
 
 	@Override
@@ -111,7 +108,6 @@ public class MenuAnalyzer extends Analyzer{
 			try {
 				ts.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

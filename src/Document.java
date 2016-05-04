@@ -121,7 +121,7 @@ public class Document implements Comparable<Document> {
 	 * The overriden method from the Comparable interface.
 	 */
 	public int compareTo(Document other) {
-		return Integer.valueOf(menuId).compareTo(Integer.valueOf(other.menuId));
+		return Integer.valueOf(menuId).compareTo(other.menuId);
 	}
 	
 	/**

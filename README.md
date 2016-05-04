@@ -1,1 +1,1 @@
-# 594-s16-project-menucritic
+[Menu Critic Project Writeup](Project-Write.pdf)

@@ -1,35 +1,35 @@
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.shingle.ShingleFilter;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+
 public class BigramGenerator {
-	
-	Analyzer a; 
-	
+
+	Analyzer a;
+
 	/**
 	 * Constructor, initializes the anonymous analyzer to tokenize by white space and then
 	 * create Bigrams
 	 */
 	public BigramGenerator(){
-	
-		 a = new Analyzer() {
-			
+
+		a = new Analyzer() {
+
 			@Override
 			protected TokenStreamComponents createComponents(String arg0) {
-				WhitespaceTokenizer source = new WhitespaceTokenizer();   
+				WhitespaceTokenizer source = new WhitespaceTokenizer();
 				TokenStream filter = new ShingleFilter(source);
 				return new TokenStreamComponents(source, filter);
 			}
 		};
 	}
-	
-	
+
+
 	/**
 	 * generates and returns Bigrams from the text
 	 * @param text the text from which to create bigrams
@@ -42,13 +42,13 @@ public class BigramGenerator {
 		CharTermAttribute term = ts.addAttribute(CharTermAttribute.class);
 		try{
 			ts.reset();
-			 while (ts.incrementToken()) {
-				 String toAdd = term.toString();
-				 if(toAdd.contains(" ")){//is a bigram
-					 retVal.add(toAdd);
-				 }
-		       }
-		       ts.end();
+			while (ts.incrementToken()) {
+				String toAdd = term.toString();
+				if(toAdd.contains(" ")){//is a bigram
+					retVal.add(toAdd);
+				}
+			}
+			ts.end();
 		} catch(IOException e){
 			e.printStackTrace();
 		} finally{
@@ -61,6 +61,6 @@ public class BigramGenerator {
 		}
 		return retVal;
 	}
-	
-	
+
+
 }
