@@ -13,6 +13,7 @@ public class MenuAnalyzerFactory extends BasePooledObjectFactory<MenuAnalyzer>{
 
 	@Override
 	public MenuAnalyzer create() throws Exception {
+		System.out.println("creating a new Menu Analyzer");
 		return new MenuAnalyzer();
 	}
 

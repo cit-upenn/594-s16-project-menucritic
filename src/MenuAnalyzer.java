@@ -83,7 +83,7 @@ public class MenuAnalyzer extends Analyzer{
 	 * 
 	 * @param text the text to generate tags for
 	 * @return A Tuple : first: the filtered string
-	 * 					 second: a HashMap of strings mapped to their POS tags
+	 * 					 second: a HashMap of words mapped to their POS tags
 	 */
 	public MyTuple<String, HashMap<String,String>> generateTags(String text){
 		
@@ -100,7 +100,6 @@ public class MenuAnalyzer extends Analyzer{
 			 while (ts.incrementToken()) {
 				 String toAdd = term.toString().replaceAll("[^A-za-z-']", "");
 				 if(toAdd != ""){//if the word to add is valid, add it to list of filtered words and append it to the string builder
-//					 System.out.println("***"+toAdd);
 					 filteredWords.add(toAdd);
 					 sb.append(toAdd + " ");
 				 }

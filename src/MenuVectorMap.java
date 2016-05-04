@@ -1,27 +1,30 @@
-import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class MenuVectorMap implements Serializable {
+/**
+ * A DataStructure to hold all of the Restaurants and their MenuAttribueVectors
+ * @author gabecolton
+ *
+ */
+public class MenuVectorMap {
 	
 	/**
-	 * 
+	 * The Hashmap all of the threads will be writing to as they generate 
+	 * MenuAttributeVectors for each menu
 	 */
-	private static final long serialVersionUID = 4485176336505072973L;
-	/**
-	 * Integer is the restaurant ID, key is the MenuAttribute vector for the restaurant
-	 */
-
 	public ConcurrentHashMap<Integer, MenuAttributeVector> vectorMap;
 
+	/**
+	 * Constructor, initializes the ConcurrentHashMap
+	 */
 	public MenuVectorMap (){
 		vectorMap = new ConcurrentHashMap<>();
 	}
 	
 	/**
-	 * Updates the restaurant in the map based on the MenuAnalyzer's data, 
-	 * store the ma for access
-	 * @param mdo
+	 * Updates the restaurant's MenuAttributeVector
+	 * in the ConcurrentHashMap based on the MenuDataObject's data, 
+	 * @param mdo contains data to populate the MenuAttributeVector
 	 */
 	public void add(MenuDataObject mdo){
 		mdo.calculateTotals();
