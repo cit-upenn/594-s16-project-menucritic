@@ -107,7 +107,7 @@ public class FileParser {
 		JSONParser parser = new JSONParser();
 		JSONArray a;
 		try {
-			a = (JSONArray) parser.parse(new FileReader("newdata.json"));
+			a = (JSONArray) parser.parse(new FileReader("output.json"));
 		
 		System.out.println(a.get(0));
 		int count = 0;
