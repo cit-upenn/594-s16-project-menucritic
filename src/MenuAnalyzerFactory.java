@@ -19,7 +19,6 @@ public class MenuAnalyzerFactory extends BasePooledObjectFactory<MenuAnalyzer>{
 
 	@Override
 	public PooledObject<MenuAnalyzer> wrap(MenuAnalyzer ma) {
-		System.out.println("returned a pooled object");
 		return new DefaultPooledObject<MenuAnalyzer>(ma);
 	}
 

@@ -1,4 +1,3 @@
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -8,12 +7,8 @@ import java.util.Vector;
  * @author gabecolton
  *
  */
-public class MenuAttributeVector implements Serializable{
+public class MenuAttributeVector {
 	
-	/**
-	 * the serial ID for this object
-	 */
-	private static final long serialVersionUID = 8704267055052033776L;
 
 	/**
 	 * A 1d vector holding the value of the average word length for each item
@@ -102,10 +97,11 @@ public class MenuAttributeVector implements Serializable{
 			 AttributeOptions.ADJ_DESC,
 			 AttributeOptions.ADV_DESC,
 			 AttributeOptions.NW_DESC,
-			 AttributeOptions.CHAIN,
+//			 AttributeOptions.CHAIN,
 //			 AttributeOptions.RATING,
 			 AttributeOptions.TFIDF_WORD,
-			 AttributeOptions.TFIDF_BIGRAM};
+//			 AttributeOptions.TFIDF_BIGRAM
+			 };
 	
 	/**
 	 * The id of this restaurant
@@ -118,6 +114,11 @@ public class MenuAttributeVector implements Serializable{
 	private int attributeNum;
 	
 	
+	/**
+	 * Constructor, initializes all instance vectors with the values from atts
+	 * @param atts the values of various attributues
+	 * @param id the id associated with this menu
+	 */
 	public MenuAttributeVector(Double [] atts, int id){
 		
 		  allAttrs = new ArrayList<>(); 
@@ -173,9 +174,9 @@ public class MenuAttributeVector implements Serializable{
 	}
 	
 	/**
-	 * Returns a vector with the options not selected zeroed out
-	 * @param options
-	 * @return
+	 * Returns a vector with only the options selected
+	 * @param options the attributes to include in this vector
+	 * @return a vecotr of all of the requested attributes
 	 */
 	public Vector<Double> getVector(AttributeOptions[] options){
 		Vector<Double> retVal = new Vector<>();
@@ -202,12 +203,14 @@ public class MenuAttributeVector implements Serializable{
 	public String getVectorString(AttributeOptions[] options){
 		Vector<Double> tempVec = getVector(options);
 		StringBuilder sb = new StringBuilder();
-
-//		sb.append(Integer.toString(id)+",");
+		//for csv
 		sb.append(Double.toString(rating.get(0))).append(",");
-
+		//with a space for R
+//		sb.append(Double.toString(rating.get(0))).append(" ");
 		for(Double d: tempVec){
-			sb.append(d).append(" ");
+			//for csv
+			sb.append(d).append(",");
+//			sb.append(d).append(" ");
 		}
 		sb.deleteCharAt(sb.length()-1);
 		return sb.toString();
@@ -242,6 +245,9 @@ public class MenuAttributeVector implements Serializable{
 		return getVectorString(allOptions);
 	}
 	
+	public Double getRating(){
+		return rating.get(0);
+	}
 	
 	
 }
