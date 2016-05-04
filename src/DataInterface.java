@@ -5,13 +5,26 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+/**
+ * The class DataInterface is used to act as an interface between the data and vector generation
+ * @author meredithmargulies
+ *
+ */
 public class DataInterface {
 	String fileName;
 	
+	/**
+	 * This is a constructor for the DataInterface
+	 * @param file the JSON file name to extract menus from
+	 */
 	public DataInterface(String file) {
 		fileName = file;
 	}
 	
+	/**
+	 * This method creates all of the menus from the JSON file 
+	 * @return an ArrayList of Restaurant Menus
+	 */
 	public ArrayList<RestaurantMenu> getAllMenus() {
 		ArrayList<RestaurantMenu> allMenus = new ArrayList<RestaurantMenu>();
 		JSONParser parser = new JSONParser();
