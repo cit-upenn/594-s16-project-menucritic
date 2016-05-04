@@ -1,1 +1,1 @@
-[Menu Critic Project Writeup](Project-Write.pdf)
+[Menu Critic Project Writeup](/Project-Write.pdf)
