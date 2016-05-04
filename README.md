@@ -1,3 +1,5 @@
+[PDF (more readable)](Project-Writeup.pdf)
+
 Gabe Colton
 
 Meredith Margulies
